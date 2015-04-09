@@ -18,6 +18,7 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
     private JButton btnStopLoad;
     private JButton btnSaveToTextFile;
     private JLabel labelLinesCount;
+    private JButton btnClear;
 
     private LoadIdThread currentThread = null;
     private int linesCount = 0;
@@ -26,6 +27,7 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
         btnStartLoad.addActionListener(this);
         btnStopLoad.addActionListener(this);
         btnSaveToTextFile.addActionListener(this);
+        btnClear.addActionListener(this);
         tfStartId.addKeyListener(this);
         tfEndId.addKeyListener(this);
     }
@@ -80,6 +82,8 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
                     }
                 }
             }
+        }else if (e.getSource()==btnClear){
+            taOutput.setText("");
         }
     }
 
