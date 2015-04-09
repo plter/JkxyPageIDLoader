@@ -54,7 +54,7 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==btnStartLoad) {
-            if (currentThread==null) {
+            if (currentThread==null||!currentThread.isRunning()) {
                 currentThread = new LoadIdThread(Integer.parseInt(tfStartId.getText()), Integer.parseInt(tfEndId.getText()),this);
                 currentThread.start();
             }
@@ -86,7 +86,7 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
             }
         }else if (e.getSource()==btnClear){
             taOutput.setText("");
-            linesCount=0;
+            setLinesCount(0);
         }
     }
 
@@ -107,10 +107,14 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
 
     @Override
     public void foundTitle(String title, int id) {
-        taOutput.append(String.format("%d\t%s\n",id,title));
+        taOutput.append(String.format("%d\t%s\n", id, title));
         taOutput.setCaretPosition(taOutput.getText().length());
 
-        linesCount++;
+        setLinesCount(++linesCount);
+    }
+
+    public void setLinesCount(int linesCount) {
+        this.linesCount = linesCount;
         labelLinesCount.setText(String.format("共%d行",linesCount));
     }
 }

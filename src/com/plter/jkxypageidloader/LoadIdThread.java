@@ -69,6 +69,10 @@ public class LoadIdThread {
         }
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public void stop() {
         running = false;
     }
