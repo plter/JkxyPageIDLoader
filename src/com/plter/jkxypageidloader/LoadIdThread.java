@@ -49,8 +49,9 @@ public class LoadIdThread {
                         findTitleInPageContent(content.toString(),id);
                     } catch (IOException e) {
                     }
-
                 }
+
+                running = false;
             }
         }.start();
     }
