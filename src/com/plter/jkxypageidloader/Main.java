@@ -3,6 +3,8 @@ package com.plter.jkxypageidloader;
 import javafx.stage.FileChooser;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicLookAndFeel;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,10 +86,17 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
             }
         }else if (e.getSource()==btnClear){
             taOutput.setText("");
+            linesCount=0;
         }
     }
 
     public static void main(String[] args) {
+
+        try {
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
 
         JFrame frame = new JFrame("极客学院页面ID加载工具");
         frame.setContentPane(new Main().rootContainer);
