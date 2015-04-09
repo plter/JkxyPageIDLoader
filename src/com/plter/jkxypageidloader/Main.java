@@ -17,8 +17,10 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
     private JTextField tfEndId;
     private JButton btnStopLoad;
     private JButton btnSaveToTextFile;
+    private JLabel labelLinesCount;
 
     private LoadIdThread currentThread = null;
+    private int linesCount = 0;
 
     public Main() {
         btnStartLoad.addActionListener(this);
@@ -94,5 +96,8 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
     public void foundTitle(String title, int id) {
         taOutput.append(String.format("%d\t%s\n",id,title));
         taOutput.setCaretPosition(taOutput.getText().length());
+
+        linesCount++;
+        labelLinesCount.setText(String.format("共%d行",linesCount));
     }
 }
