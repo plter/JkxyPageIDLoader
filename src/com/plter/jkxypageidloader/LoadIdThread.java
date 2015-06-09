@@ -33,7 +33,7 @@ public class LoadIdThread {
             public void run() {
                 super.run();
 
-                for (int id = startId;id<=endId&&running;id++){
+                for (int id = endId;id>=startId&&running;id--){
                     String currentUrl = String.format("%s%d.html",Config.BASE_URL,id);
                     try {
                         InputStream in = new URL(currentUrl).openStream();
