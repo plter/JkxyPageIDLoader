@@ -57,9 +57,10 @@ public class LoadIdThread {
     }
 
     private void findTitleInPageContent(String pageContent,int currentId){
-        int titleStart = pageContent.indexOf("<title>")+7;
+        int titleStart = pageContent.indexOf("<h1 ");
+        titleStart = pageContent.indexOf(">",titleStart)+1;
         if (titleStart>-1){
-            int titleEnd = pageContent.indexOf("</title>",titleStart);
+            int titleEnd = pageContent.indexOf("</h1>",titleStart);
 
             String title = pageContent.substring(titleStart,titleEnd);
 
