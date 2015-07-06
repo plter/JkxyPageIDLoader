@@ -1,37 +1,36 @@
 package com.plter.jkxypageidloader;
 
-import javafx.stage.FileChooser;
-
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicLookAndFeel;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
-public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTitleListener {
+public class MainWindow implements KeyListener, ActionListener, LoadIdThread.IFoundTitleListener, MouseListener {
 
-    private JPanel rootContainer;
+    public JPanel rootContainer;
     private JButton btnStartLoad;
-    private JTextArea taOutput;
     private JTextField tfStartId;
     private JTextField tfEndId;
     private JButton btnStopLoad;
     private JButton btnSaveToTextFile;
     private JLabel labelLinesCount;
     private JButton btnClear;
+    private JTable tableOutput;
 
     private LoadIdThread currentThread = null;
     private int linesCount = 0;
+    private TMPageList pageListModel = new TMPageList();
 
-    public Main() {
+    public MainWindow() {
         btnStartLoad.addActionListener(this);
         btnStopLoad.addActionListener(this);
         btnSaveToTextFile.addActionListener(this);
         btnClear.addActionListener(this);
         tfStartId.addKeyListener(this);
         tfEndId.addKeyListener(this);
+
+        tableOutput.setModel(pageListModel);
+        tableOutput.getColumnModel().getColumn(0).setMaxWidth(100);
+        tableOutput.addMouseListener(this);
     }
 
     @Override
@@ -73,48 +72,74 @@ public class Main implements KeyListener, ActionListener, LoadIdThread.IFoundTit
                     try {
                         file.createNewFile();
 
-                        FileOutputStream fos = new FileOutputStream(file);
-                        fos.write(taOutput.getText().getBytes("utf-8"));
-                        fos.flush();
-                        fos.close();
-
-                        JOptionPane.showMessageDialog(rootContainer,"文件保存成功");
+                        saveDataToFile(file);
                     } catch (IOException e1) {
                         JOptionPane.showMessageDialog(rootContainer,"无法创建文件，请确认你是否有权限在此处创建文件");
                     }
+                }else {
+                    saveDataToFile(file);
                 }
             }
         }else if (e.getSource()==btnClear){
-            taOutput.setText("");
+            pageListModel.clear();
             setLinesCount(0);
         }
     }
 
-    public static void main(String[] args) {
-
+    private void saveDataToFile(File file) {
+        FileOutputStream fos = null;
         try {
-            UIManager.setLookAndFeel(new MetalLookAndFeel());
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+            fos = new FileOutputStream(file);
+            fos.write(pageListModel.toString().getBytes("utf-8"));
+            fos.flush();
+            fos.close();
 
-        JFrame frame = new JFrame("极客学院页面ID加载工具");
-        frame.setContentPane(new Main().rootContainer);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(640, 480);
-        frame.setVisible(true);
+            JOptionPane.showMessageDialog(rootContainer, "文件保存成功");
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(rootContainer, "文件不存在");
+        } catch (UnsupportedEncodingException e) {
+            JOptionPane.showMessageDialog(rootContainer,"你的系统不支持UTF-8编码方式");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(rootContainer, "无法创建文件，请确认你是否有权限在此处创建文件");
+        }
     }
 
-    @Override
-    public void foundTitle(String title, int id) {
-        taOutput.append(String.format("%d\t%s\n", id, title));
-        taOutput.setCaretPosition(taOutput.getText().length());
 
+    @Override
+    public void foundPage(String title, int id,String url) {
+        pageListModel.add(new CellData(title,id,url));
         setLinesCount(++linesCount);
     }
 
     public void setLinesCount(int linesCount) {
         this.linesCount = linesCount;
         labelLinesCount.setText(String.format("共%d行",linesCount));
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount()==2){
+            pageListModel.getCellData(tableOutput.getSelectedRow()).openPage();
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

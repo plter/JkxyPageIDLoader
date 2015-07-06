@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * Created by plter on 4/8/15.
@@ -46,7 +45,7 @@ public class LoadIdThread {
                         }
                         in.close();
 
-                        findTitleInPageContent(content.toString(),id);
+                        findTitleInPageContent(content.toString(),id,currentUrl);
                     } catch (IOException e) {
                     }
                 }
@@ -56,16 +55,17 @@ public class LoadIdThread {
         }.start();
     }
 
-    private void findTitleInPageContent(String pageContent,int currentId){
+    private void findTitleInPageContent(String pageContent,int currentId,String url){
         int titleStart = pageContent.indexOf("<h1 ");
         titleStart = pageContent.indexOf(">",titleStart)+1;
         if (titleStart>-1){
             int titleEnd = pageContent.indexOf("</h1>",titleStart);
 
             String title = pageContent.substring(titleStart,titleEnd);
+            title = title.trim();
 
             if (getFoundTitleListener()!=null){
-                getFoundTitleListener().foundTitle(title,currentId);
+                getFoundTitleListener().foundPage(title, currentId ,url);
             }
         }
     }
@@ -87,7 +87,7 @@ public class LoadIdThread {
     }
 
     public static interface IFoundTitleListener{
-        void foundTitle(String title,int id);
+        void foundPage(String title, int id,String url);
     }
 }
 
