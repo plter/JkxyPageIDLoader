@@ -56,16 +56,19 @@ public class LoadIdThread {
     }
 
     private void findTitleInPageContent(String pageContent,int currentId,String url){
+
         int titleStart = pageContent.indexOf("<h1 ");
-        titleStart = pageContent.indexOf(">",titleStart)+1;
-        if (titleStart>-1){
-            int titleEnd = pageContent.indexOf("</h1>",titleStart);
+        if (titleStart>-1) {
+            titleStart = pageContent.indexOf(">", titleStart) + 1;
+            if (titleStart > -1) {
+                int titleEnd = pageContent.indexOf("</h1>", titleStart);
 
-            String title = pageContent.substring(titleStart,titleEnd);
-            title = title.trim();
+                String title = pageContent.substring(titleStart, titleEnd);
+                title = title.trim();
 
-            if (getFoundTitleListener()!=null){
-                getFoundTitleListener().foundPage(title, currentId ,url);
+                if (getFoundTitleListener() != null) {
+                    getFoundTitleListener().foundPage(title, currentId, url);
+                }
             }
         }
     }
